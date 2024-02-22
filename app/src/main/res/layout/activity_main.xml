@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context="MainActivity">
 
     <!-- Altres elements del teu layout -->
 
@@ -11,8 +11,8 @@
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/altreElement"
-        android:layout_marginTop="16dp" />
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="0dp" />
 
     <!-- Altres elements del teu layout -->
 

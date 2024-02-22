@@ -1,11 +1,10 @@
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playsound.R
+import com.example.playsound.SongListAdapter
 
 class MainActivity : AppCompatActivity() {
     private var mediaPlayer: MediaPlayer? = null
@@ -21,17 +20,13 @@ class MainActivity : AppCompatActivity() {
         // Definir la llista de noms de cançons
         val songNames = arrayOf("song1", "song2", "song3") // Reemplaçar amb els noms reals
 
-        // Crear un adaptador per al ListView
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, songNames)
-
-        // Connectar l'adaptador al ListView
+        // Utilitza un adaptador personalitzat
+        val adapter = SongListAdapter(this, R.layout.list_item, songNames)
         listView.adapter = adapter
 
-        // Inicialitzar el reproductor de mitjans de comunicació
         mediaPlayer = MediaPlayer()
 
-        // Configurar la reproducció al fer clic a un element de la llista
-        listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+        listView.setOnItemClickListener { _, _, position, _ ->
             playSong(position)
         }
     }
