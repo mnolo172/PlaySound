@@ -1,27 +1,26 @@
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playsound.R
-import com.example.playsound.SongListAdapter
 
 class MainActivity : AppCompatActivity() {
     private var mediaPlayer: MediaPlayer? = null
     private var currentSongId: Int = 0
+    private lateinit var songRawIds: Array<Int>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Obtenir la referència al ListView
         val listView: ListView = findViewById(R.id.listView)
 
-        // Definir la llista de noms de cançons
-        val songNames = arrayOf("song1", "song2", "song3") // Reemplaçar amb els noms reals
+        val songTitles = arrayOf("Atrevete", "Gasolina", "Suavemente") // Nombres de las canciones
+        val songRawIds = arrayOf(R.raw.atrevete, R.raw.gasolina, R.raw.suavemente) // Identificadores de recursos de las canciones
 
-        // Utilitza un adaptador personalitzat
-        val adapter = SongListAdapter(this, R.layout.list_item, songNames)
+        val adapter = SongListAdapter(this, songTitles, songRawIds)
         listView.adapter = adapter
 
         mediaPlayer = MediaPlayer()
@@ -32,16 +31,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun playSong(songId: Int) {
-        // Pausar la reproducció actual si n'hi ha una
         if (mediaPlayer?.isPlaying == true) {
             mediaPlayer?.pause()
         }
 
-        // Obre i configura el nou arxiu MP3
-        currentSongId = resources.getIdentifier("song${songId + 1}", "raw", packageName)
+        currentSongId = songRawIds[songId]
         mediaPlayer = MediaPlayer.create(this, currentSongId)
-
-        // Iniciar la reproducció
         mediaPlayer?.start()
     }
 

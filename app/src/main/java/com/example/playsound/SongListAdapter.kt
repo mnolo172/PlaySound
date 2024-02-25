@@ -1,5 +1,3 @@
-package com.example.playsound
-
 import android.content.Context
 import android.media.MediaPlayer
 import android.view.LayoutInflater
@@ -8,44 +6,55 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import android.widget.TextView
+import com.example.playsound.R
 
-class SongListAdapter(context: Context, resource: Int, objects: Array<String>) :
-    ArrayAdapter<String>(context, resource, objects) {
+class SongListAdapter(
+    context: Context,
+    private val songTitles: Array<String>,
+    private val songRawIds: Array<Int>
+): ArrayAdapter<String>(context, R.layout.list_item, songTitles) {
 
     private var mediaPlayer: MediaPlayer? = null
     private var currentSongId: Int = 0
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
+        val viewHolder: ViewHolder
+
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.list_item, parent, false)
+
+            viewHolder = ViewHolder()
+            viewHolder.textSongTitle = convertView.findViewById(R.id.textSongTitle)
+            viewHolder.buttonPlay = convertView.findViewById(R.id.buttonPlay)
+            viewHolder.buttonPause = convertView.findViewById(R.id.buttonPause)
+            viewHolder.buttonReplay = convertView.findViewById(R.id.buttonReplay)
+
+            convertView.tag = viewHolder
+        } else {
+            viewHolder = convertView.tag as ViewHolder
         }
 
-        val textSongTitle: TextView = convertView!!.findViewById(R.id.textSongTitle)
-        val buttonPlay: ImageButton = convertView.findViewById(R.id.buttonPlay)
-        val buttonPause: ImageButton = convertView.findViewById(R.id.buttonPause)
-        val buttonReplay: ImageButton = convertView.findViewById(R.id.buttonReplay)
-
         val songTitle = getItem(position)
-        textSongTitle.text = songTitle
+        viewHolder.textSongTitle.text = songTitle
 
-        buttonPlay.setOnClickListener {
+        viewHolder.buttonPlay.setOnClickListener {
             playSong(position)
         }
 
-        buttonPause.setOnClickListener {
+        viewHolder.buttonPause.setOnClickListener {
             if (mediaPlayer?.isPlaying == true) {
                 mediaPlayer?.pause()
             }
         }
 
-        buttonReplay.setOnClickListener {
+        viewHolder.buttonReplay.setOnClickListener {
             if (mediaPlayer?.isPlaying == true) {
                 mediaPlayer?.seekTo(0)
             }
         }
 
-        return convertView
+        return convertView!!
     }
 
     private fun playSong(songId: Int) {
@@ -53,8 +62,15 @@ class SongListAdapter(context: Context, resource: Int, objects: Array<String>) :
             mediaPlayer?.pause()
         }
 
-        currentSongId = context.resources.getIdentifier("song${songId + 1}", "raw", context.packageName)
+        currentSongId = songRawIds[songId]
         mediaPlayer = MediaPlayer.create(context, currentSongId)
         mediaPlayer?.start()
+    }
+
+    private class ViewHolder {
+        lateinit var textSongTitle: TextView
+        lateinit var buttonPlay: ImageButton
+        lateinit var buttonPause: ImageButton
+        lateinit var buttonReplay: ImageButton
     }
 }
